@@ -111,6 +111,3 @@ To run this application locally, follow these steps:
 
     This command will open the application in your default web browser.
 
----
-
-## 📁 Project Structure
