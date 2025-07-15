@@ -278,13 +278,17 @@ def display_visualizations(df):
         
         # --- Download Options ---
         st.sidebar.header("💾 Download Plot")
-        img_bytes = fig.to_image(format="png", scale=2)
-        st.sidebar.download_button(
-            label="🖼️ Download as PNG",
-            data=img_bytes,
-            file_name=f"{graph_type.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png",
-            mime="image/png"
-        )
+        try:
+            img_bytes = fig.to_image(format="png", scale=2)
+            st.sidebar.download_button(
+                label="🖼️ Download as PNG",
+                data=img_bytes,
+                file_name=f"{graph_type.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png",
+                mime="image/png"
+            )
+        except RuntimeError:
+            st.sidebar.warning("PNG export is unavailable on this server.")
+        
         html_bytes = fig.to_html()
         st.sidebar.download_button(
             label="🌐 Download as HTML",
