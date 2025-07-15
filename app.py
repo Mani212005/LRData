@@ -368,7 +368,7 @@ DATASET_COLUMNS = {
     "California Housing": {
         "old_cols": ["MedInc", "HouseAge", "AveRooms", "AveBedrms", "Population", "AveOccup", "Latitude", "Longitude", "medianHouseValue"],
         "new_cols": [
-            "Median Income", "House Age", "Average Rooms", "Average Bedrooms", 
+            "Unnamed: 0", "Median Income", "House Age", "Average Rooms", "Average Bedrooms", 
             "Population", "Average Occupancy", "Latitude", "Longitude", "Median House Value"
         ],
         "target_col": "Median House Value"
@@ -492,7 +492,7 @@ sample_datasets = {
     "California Housing": "https://raw.githubusercontent.com/ageron/handson-ml/master/datasets/housing/housing.csv",
     "Medical Insurance Costs": "https://raw.githubusercontent.com/stedy/Machine-Learning-with-R-datasets/master/insurance.csv",
     "Fish Market": "https://raw.githubusercontent.com/Ankit152/Fish-Market/main/Fish.csv",
-    "Salary Data": "https://raw.githubusercontent.com/saikrishnapotluri/salary_Data.csv/master/Salary_Data.csv"
+    "Salary Data": "https://gist.githubusercontent.com/saikrishnapotluri/33ace369025ec4de0dfb9f22a0c5b09f/raw/salary_Data.csv"
 }
 
 with st.sidebar:
@@ -636,10 +636,48 @@ elif selection == "ML Modeler":
                     selected_categorical_cols = []
                     if categorical_cols:
                         with st.expander("Categorical Feature Handling 🗂️"):
-                            selected_categorical_cols = st.multiselect("Select categorical columns for One-Hot Encoding", categorical_cols)
+                            selected_categorical_cols = st.multiselect("Select categorical columns for One-Hot Encoding", categorical_cols, key="categorical_cols_select")
 
-                    target_col = st.selectbox("Select target column (y) (Numeric Only)", numeric_cols, index=numeric_cols.index(st.session_state.get('target_col')) if st.session_state.get('target_col') in numeric_cols else 0)
-                    feature_cols = st.multiselect("Select feature columns (X) (Numeric and One-Hot Encoded Categorical)", [col for col in numeric_cols if col != target_col] + selected_categorical_cols)
+                    # Determine initial target column selection
+                    initial_target_col = None
+                    if st.session_state.selected_dataset != "None" and st.session_state.selected_dataset in DATASET_COLUMNS:
+                        initial_target_col = DATASET_COLUMNS[st.session_state.selected_dataset]["target_col"]
+                    
+                    # Ensure initial_target_col is in numeric_cols, otherwise default to first numeric
+                    target_col_index = 0
+                    if initial_target_col and initial_target_col in numeric_cols:
+                        target_col_index = numeric_cols.index(initial_target_col)
+                    elif numeric_cols:
+                        target_col_index = 0 # Default to the first numeric column if no specific target or target not found
+                    
+                    target_col = st.selectbox(
+                        "Select target column (y) (Numeric Only)",
+                        numeric_cols,
+                        index=target_col_index,
+                        key="target_col_select"
+                    )
+
+                    # Feature columns: all columns except the selected target column
+                    available_feature_cols = [col for col in df.columns if col != target_col]
+
+                    # Determine a single default feature column
+                    single_default_feature = []
+                    # Try to find the first numeric column that is not the target
+                    for col in numeric_cols:
+                        if col != target_col:
+                            single_default_feature = [col]
+                            break
+                    
+                    # If no suitable numeric column found, try the first available feature column
+                    if not single_default_feature and available_feature_cols:
+                        single_default_feature = [available_feature_cols[0]]
+
+                    feature_cols = st.multiselect(
+                        "Select feature columns (X) (Numeric and One-Hot Encoded Categorical)",
+                        available_feature_cols,
+                        default=single_default_feature,
+                        key="feature_cols_select"
+                    )
 
                     # Step 3: Train Model
                     st.header("3. Train Linear Regression Model 🧠")
