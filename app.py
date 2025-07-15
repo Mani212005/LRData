@@ -5,7 +5,7 @@ from pathlib import Path
 import plotly.express as px
 import seaborn as sns
 import matplotlib.pyplot as plt
-from ydata_profiling import ProfileReport
+
 import streamlit.components.v1 as components
 from datetime import datetime
 
@@ -159,10 +159,15 @@ def display_data_overview(df):
         if missing_data['Missing Count'].sum() == 0:
             st.success("✅ No missing values found!")
 
-def display_visualizations(df, graph_type):
+def display_visualizations(df):
     """Handles the creation and display of various plots."""
     st.markdown('<h2 class="section-header">🎨 Visualization Studio</h2>', unsafe_allow_html=True)
     
+    graph_type = st.selectbox(
+        'Select Graph Type',
+        ['Scatter Plot', 'Line Plot', 'Bar Chart', 'Histogram', 'Box Plot', 'Pie Chart', 'Heatmap', 'Pair Plot', 'Area Chart', 'Violin Plot', 'Strip Plot']
+    )
+
     numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
     categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
     all_cols = df.columns.tolist()
@@ -170,41 +175,58 @@ def display_visualizations(df, graph_type):
     fig = None
     # --- Plotting Logic ---
     if graph_type == 'Scatter Plot':
-        st.sidebar.subheader("Scatter Plot Options")
-        x_col = st.sidebar.selectbox('X-Axis', all_cols, key='scatter_x')
-        y_col = st.sidebar.selectbox('Y-Axis', all_cols, key='scatter_y')
-        color_col = st.sidebar.selectbox('Color By (Optional)', ['None'] + all_cols, key='scatter_color')
+        st.subheader("Scatter Plot Options")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            x_col = st.selectbox('X-Axis', all_cols, key='scatter_x')
+        with col2:
+            y_col = st.selectbox('Y-Axis', all_cols, key='scatter_y')
+        with col3:
+            color_col = st.selectbox('Color By (Optional)', ['None'] + all_cols, key='scatter_color')
+        
         color_arg = None if color_col == 'None' else color_col
         fig = px.scatter(df, x=x_col, y=y_col, color=color_arg, title=f'{x_col} vs. {y_col}')
 
     elif graph_type == 'Line Plot':
-        st.sidebar.subheader("Line Plot Options")
-        x_col = st.sidebar.selectbox('X-Axis', all_cols, key='line_x')
-        y_col = st.sidebar.selectbox('Y-Axis', all_cols, key='line_y')
+        st.subheader("Line Plot Options")
+        col1, col2 = st.columns(2)
+        with col1:
+            x_col = st.selectbox('X-Axis', all_cols, key='line_x')
+        with col2:
+            y_col = st.selectbox('Y-Axis', all_cols, key='line_y')
         fig = px.line(df, x=x_col, y=y_col, title=f'{y_col} over {x_col}')
 
     elif graph_type == 'Bar Chart':
-        st.sidebar.subheader("Bar Chart Options")
-        x_col = st.sidebar.selectbox('X-Axis', all_cols, key='bar_x')
-        y_col = st.sidebar.selectbox('Y-Axis', all_cols, key='bar_y')
+        st.subheader("Bar Chart Options")
+        col1, col2 = st.columns(2)
+        with col1:
+            x_col = st.selectbox('X-Axis', all_cols, key='bar_x')
+        with col2:
+            y_col = st.selectbox('Y-Axis', all_cols, key='bar_y')
         fig = px.bar(df, x=x_col, y=y_col, title=f'Average {y_col} by {x_col}')
 
     elif graph_type == 'Histogram':
-        st.sidebar.subheader("Histogram Options")
-        col = st.sidebar.selectbox('Select Column', numeric_cols, key='hist_col')
-        bins = st.sidebar.slider('Number of Bins', 5, 100, 20, key='hist_bins')
+        st.subheader("Histogram Options")
+        col1, col2 = st.columns(2)
+        with col1:
+            col = st.selectbox('Select Column', numeric_cols, key='hist_col')
+        with col2:
+            bins = st.slider('Number of Bins', 5, 100, 20, key='hist_bins')
         fig = px.histogram(df, x=col, nbins=bins, title=f'Distribution of {col}')
 
     elif graph_type == 'Box Plot':
-        st.sidebar.subheader("Box Plot Options")
-        y_col = st.sidebar.selectbox('Y-Axis', numeric_cols, key='box_y')
-        x_col = st.sidebar.selectbox('X-Axis (Optional)', ['None'] + categorical_cols, key='box_x')
+        st.subheader("Box Plot Options")
+        col1, col2 = st.columns(2)
+        with col1:
+            y_col = st.selectbox('Y-Axis', numeric_cols, key='box_y')
+        with col2:
+            x_col = st.selectbox('X-Axis (Optional)', ['None'] + categorical_cols, key='box_x')
         color_arg = None if x_col == 'None' else x_col
         fig = px.box(df, y=y_col, x=color_arg, title=f'Box Plot of {y_col}')
 
     elif graph_type == 'Pie Chart':
-        st.sidebar.subheader("Pie Chart Options")
-        col = st.sidebar.selectbox('Select Column', categorical_cols, key='pie_col')
+        st.subheader("Pie Chart Options")
+        col = st.selectbox('Select Column', categorical_cols, key='pie_col')
         counts = df[col].value_counts()
         fig = px.pie(values=counts.values, names=counts.index, title=f'Distribution of {col}')
 
@@ -224,21 +246,30 @@ def display_visualizations(df, graph_type):
             st.warning("Pair Plot requires at least 2 numeric columns.")
 
     elif graph_type == 'Area Chart':
-        st.sidebar.subheader("Area Chart Options")
-        x_col = st.sidebar.selectbox('X-Axis', all_cols, key='area_x')
-        y_col = st.sidebar.selectbox('Y-Axis', all_cols, key='area_y')
+        st.subheader("Area Chart Options")
+        col1, col2 = st.columns(2)
+        with col1:
+            x_col = st.selectbox('X-Axis', all_cols, key='area_x')
+        with col2:
+            y_col = st.selectbox('Y-Axis', all_cols, key='area_y')
         fig = px.area(df, x=x_col, y=y_col, title=f'Area Chart of {y_col} over {x_col}')
 
     elif graph_type == 'Violin Plot':
-        st.sidebar.subheader("Violin Plot Options")
-        x_col = st.sidebar.selectbox('X-Axis', all_cols, key='violin_x')
-        y_col = st.sidebar.selectbox('Y-Axis', all_cols, key='violin_y')
+        st.subheader("Violin Plot Options")
+        col1, col2 = st.columns(2)
+        with col1:
+            x_col = st.selectbox('X-Axis', all_cols, key='violin_x')
+        with col2:
+            y_col = st.selectbox('Y-Axis', all_cols, key='violin_y')
         fig = px.violin(df, x=x_col, y=y_col, title=f'Violin Plot of {y_col} by {x_col}')
 
     elif graph_type == 'Strip Plot':
-        st.sidebar.subheader("Strip Plot Options")
-        x_col = st.sidebar.selectbox('X-Axis', all_cols, key='strip_x')
-        y_col = st.sidebar.selectbox('Y-Axis', all_cols, key='strip_y')
+        st.subheader("Strip Plot Options")
+        col1, col2 = st.columns(2)
+        with col1:
+            x_col = st.selectbox('X-Axis', all_cols, key='strip_x')
+        with col2:
+            y_col = st.selectbox('Y-Axis', all_cols, key='strip_y')
         fig = px.strip(df, x=x_col, y=y_col, title=f'Strip Plot of {y_col} by {x_col}')
 
     # Display the plot if one was created
@@ -262,15 +293,7 @@ def display_visualizations(df, graph_type):
             mime="text/html"
         )
 
-def display_eda_report(df):
-    """Generates and displays the ydata-profiling report."""
-    st.markdown('<h2 class="section-header">🤖 Automated EDA Report</h2>', unsafe_allow_html=True)
-    if st.button("Generate Detailed EDA Report"):
-        with st.spinner("Generating report... This may take a few moments for large datasets."):
-            profile = ProfileReport(df, title="Automated EDA Report", explorative=True)
-            components.html(profile.to_html(), height=800, scrolling=True)
-    else:
-        st.info("Click the button above to generate a comprehensive automated report of your dataset.")
+
 
 
 # --- Helper Functions (ML Modeling) ---
@@ -458,13 +481,6 @@ if selection == "Data Explorer":
     if st.session_state.df is not None:
         st.markdown('<h1 style="font-weight:bold;color:#1e3a8a;">InsightiGraph</h1>', unsafe_allow_html=True)
         
-        st.sidebar.header("🎨 Chart Controls")
-        graph_type = st.sidebar.selectbox(
-            'Select Graph Type',
-            ['Scatter Plot', 'Line Plot', 'Bar Chart', 'Histogram', 'Box Plot', 'Pie Chart', 'Heatmap', 'Pair Plot', 'Area Chart', 'Violin Plot', 'Strip Plot']
-        )
-        st.sidebar.markdown("---")
-
         # --- Download CSV ---
         csv = st.session_state.df.to_csv(index=False).encode('utf-8')
         st.sidebar.download_button(
@@ -476,14 +492,12 @@ if selection == "Data Explorer":
         
 
         # --- Main Application Tabs ---
-        tab1, tab2, tab3 = st.tabs(["📊 Data Overview", "🎨 Visualization Studio", "🤖 Auto EDA Report"])
+        tab1, tab2 = st.tabs(["📊 Data Overview", "🎨 Visualization Studio"])
 
         with tab1:
             display_data_overview(st.session_state.df)
         with tab2:
-            display_visualizations(st.session_state.df, graph_type)
-        with tab3:
-            display_eda_report(st.session_state.df)
+            display_visualizations(st.session_state.df)
 
     else:
         display_welcome_message()
