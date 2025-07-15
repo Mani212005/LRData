@@ -22,7 +22,8 @@ st.markdown("""
 <style>
     /* General Styles */
     .stApp {
-        background-color: #f0f2f6;
+        background-color: #f0f2f6; /* Light mode background */
+        color: #333333; /* Default text color for light mode */
     }
     .main-header {
         font-size: 3rem;
@@ -42,7 +43,7 @@ st.markdown("""
         margin-bottom: 1rem;
     }
     .metric-card {
-        background-color: #ffffff;
+        background-color: #ffffff; /* Light mode card background */
         padding: 1.5rem;
         border-radius: 0.75rem;
         border: 1px solid #e0e0e0;
@@ -101,6 +102,51 @@ st.markdown("""
         font-size: 1.25rem;
         max-width: 700px;
         margin: 1rem auto;
+    }
+
+    /* Dark Mode Styles */
+    @media (prefers-color-scheme: dark) {
+        .stApp {
+            background-color: #1a1a1a; /* Dark background */
+            color: #f0f0f0; /* Light text for dark mode */
+        }
+        .main-header {
+            color: #90caf9; /* Lighter blue for dark mode */
+            text-shadow: 2px 2px 4px #333333;
+        }
+        .section-header {
+            color: #90caf9; /* Lighter blue for dark mode */
+            border-bottom-color: #90caf9;
+        }
+        .metric-card {
+            background-color: #2c2c2c; /* Darker card background */
+            border-color: #444444;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .metric-card .stMetricLabel {
+            color: #b0b0b0; /* Lighter gray for dark mode */
+        }
+        .metric-card .stMetricValue {
+            color: #90caf9; /* Lighter blue for dark mode */
+        }
+        .stTabs [data-baseweb="tab"] {
+            border-bottom: 2px solid #444444;
+        }
+        .stTabs [aria-selected="true"] {
+            border-bottom: 4px solid #90caf9;
+            color: #90caf9;
+        }
+        .stButton>button {
+            background-color: #90caf9;
+            color: #1a1a1a; /* Dark text on light button */
+        }
+        .stButton>button:hover {
+            background-color: #64b5f6;
+        }
+        .welcome-container {
+            background: linear-gradient(135deg, #0d47a1 0%, #42a5f5 100%); /* Darker gradient */
+            color: white;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
