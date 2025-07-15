@@ -11,6 +11,8 @@ Whether you're a data analyst, a student, or a seasoned data scientist, Insighti
 * **Perform comprehensive Automated Exploratory Data Analysis (EDA)** reports.
 * **Build and evaluate Linear Regression models** with customizable preprocessing steps.
 
+![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr%201.png)
+
 ---
 
 ## ✨ Features
@@ -110,4 +112,14 @@ To run this application locally, follow these steps:
     ```
 
     This command will open the application in your default web browser.
+    ![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr2.png)
+    ![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr3.png)
+    ![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr4.png)
+    ![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr5.png)
+    ![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr6.png)
+    ![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr7.png)
+    ![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr8.png)
+    ![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr9.png)
+    ![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr10.png)
+    ![Image_Alt](https://github.com/Mani212005/LRData/blob/6d4bd286991fddb9d9129966f0029d33b8b147da/lr11.png)
 
